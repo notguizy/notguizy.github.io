@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PALANTKILLED — Dossier d'équipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eae4d3;
+    --paper-dark:#ddd5bd;
+    --ink:#1c1a15;
+    --ink-soft:#4a463c;
+    --redact:#141310;
+    --stamp:#8f1f1f;
+    --stamp-soft:#8f1f1f99;
+    --classified-green:#3f4a3a;
+    --rule:#b3a988;
+    --paper-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    --maxw: 880px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    line-height:1.6;
+    position:relative;
+  }
+
+  /* paper grain */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:0.5;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode:multiply;
+  }
+
+  .wrap{
+    max-width: var(--maxw);
+    margin:0 auto;
+    padding: 0 24px;
+    position:relative;
+    z-index:2;
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding: 64px 0 40px;
+    border-bottom: 3px double var(--ink);
+    position:relative;
+  }
+
+  .case-number{
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:28px;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:10px;
+  }
+
+  .stamp{
+    position:absolute;
+    top:36px;
+    right:12px;
+    border:3px solid var(--stamp);
+    color:var(--stamp);
+    font-family:'Special Elite', monospace;
+    font-size:13px;
+    letter-spacing:0.12em;
+    padding:6px 12px;
+    transform: rotate(9deg);
+    opacity:0.85;
+    text-align:center;
+    line-height:1.3;
+    user-select:none;
+  }
+
+  .logo-row{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:6px;
+  }
+
+  .mark{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+  }
+
+  h1.team-name{
+    font-family:'Special Elite', monospace;
+    font-size: clamp(34px, 7vw, 58px);
+    letter-spacing:0.02em;
+    margin:0;
+    line-height:1;
+  }
+
+  .dicton{
+    margin-top:18px;
+    font-family:'Special Elite', monospace;
+    font-size: clamp(16px, 2.6vw, 22px);
+    color:var(--stamp);
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+  }
+
+  .subline{
+    margin-top:14px;
+    max-width:56ch;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin: 64px 0 24px;
+  }
+  .sec-head .tag{
+    font-size:11px;
+    letter-spacing:0.18em;
+    color:var(--paper);
+    background:var(--ink);
+    padding:3px 8px;
+  }
+  .sec-head h2{
+    font-family:'Special Elite', monospace;
+    font-size: clamp(20px,4vw,28px);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .sec-head::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--rule);
+  }
+
+  /* ---------- MANIFESTO ---------- */
+  .doc{
+    background:var(--paper-dark);
+    border:1px solid var(--rule);
+    padding: 30px 28px;
+    position:relative;
+    box-shadow: var(--paper-shadow);
+  }
+  .doc::before{
+    content:"CONFIDENTIEL";
+    position:absolute;
+    top:14px;
+    right:16px;
+    font-family:'Special Elite',monospace;
+    font-size:11px;
+    color:var(--rule);
+    letter-spacing:0.14em;
+  }
+  .doc p{
+    margin: 0 0 18px;
+    font-size:15px;
+  }
+  .doc p:last-child{margin-bottom:0;}
+
+  .redacted{
+    background:var(--redact);
+    color:var(--redact);
+    padding:0 4px;
+    border-radius:1px;
+    cursor:pointer;
+    transition: color 0.18s ease, background 0.18s ease;
+    outline-offset:2px;
+  }
+  .redacted:hover,
+  .redacted:focus-visible,
+  .redacted.revealed{
+    background:transparent;
+    color:var(--stamp);
+    outline:1px dashed var(--stamp-soft);
+  }
+  .redacted-hint{
+    display:block;
+    margin-top:16px;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- REVENDICATIONS ---------- */
+  .demands{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:grid;
+    gap:2px;
+  }
+  .demands li{
+    background:var(--paper-dark);
+    border-left:4px solid var(--stamp);
+    padding:16px 18px;
+    font-size:14.5px;
+    display:flex;
+    gap:14px;
+  }
+  .demands li .no{
+    font-family:'Special Elite', monospace;
+    color:var(--stamp);
+    flex-shrink:0;
+  }
+
+  /* ---------- MEMBERS ---------- */
+  .roster{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--paper-dark);
+    border:1px solid var(--rule);
+    padding:16px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:8px; left:8px; right:8px; bottom:8px;
+    border:1px dashed var(--rule);
+    pointer-events:none;
+  }
+  .card .handle{
+    font-family:'Special Elite', monospace;
+    font-size:16px;
+    margin-bottom:4px;
+  }
+  .card .role{
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--classified-green);
+  }
+  .card .clearance{
+    margin-top:10px;
+    font-size:10px;
+    color:var(--ink-soft);
+    letter-spacing:0.08em;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    margin-top:70px;
+    border-top:3px double var(--ink);
+    padding: 26px 0 50px;
+    font-size:12px;
+    color:var(--ink-soft);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:12px;
+  }
+  footer a{
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1px solid var(--stamp);
+  }
+  footer a:hover{ color:var(--stamp); }
+
+  @media (max-width:520px){
+    .stamp{ position:static; transform:rotate(-2deg); display:inline-block; margin-top:14px; }
+    .logo-row{ align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="case-number">
+      <span>DOSSIER N° PK-2026</span>
+      <span>STATUT : ACTIF</span>
+    </div>
+
+    <div class="stamp">NON<br>CONFORME</div>
+
+    <div class="logo-row">
+      <svg class="mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="#1c1a15" stroke-width="2.5"/>
+        <ellipse cx="32" cy="32" rx="18" ry="10" fill="none" stroke="#1c1a15" stroke-width="2.5"/>
+        <circle cx="32" cy="32" r="5.5" fill="#1c1a15"/>
+        <line x1="10" y1="54" x2="54" y2="10" stroke="#8f1f1f" stroke-width="3.5"/>
+      </svg>
+      <h1 class="team-name">PALANTKILLED</h1>
+    </div>
+
+    <div class="dicton">Fuck spying. Fuck the system.</div>
+
+    <p class="subline">
+      Équipe de CTF — . Ce dossier n'est pas classifié :
+      il est public, par principe.
+    </p>
+  </header>
+
+  <!-- MANIFESTO -->
+  <section id="manifeste">
+    <div class="sec-head">
+      <span class="tag">01</span>
+      <h2>Déclaration</h2>
+    </div>
+
+    <div class="doc">
+      <p>
+        Palantkilled est une team faite pour contrer tous les stéréotypes des
+        <span class="redacted" tabindex="0" role="button" aria-label="Texte masqué, cliquer pour révéler">hackers conformistes</span>
+        qui rentrent dans les clous de la société pour se faire accepter par les grands groupes
+        et dénaturer l'esprit du hacking.
+      </p>
+      <p>
+        Nous aimons l'informatique, mais nous ne nous conformerons pas à des normes pour avoir un CDI.
+        <span class="redacted" tabindex="0" role="button" aria-label="Texte masqué, cliquer pour révéler">Fuck l'espionnage de masse</span>
+        et fuck ce système oppressant qui réduit les personnes à leur identité,
+        leur couleur de peau ou leur situation financière.
+      </p>
+      <p>
+        Nous nous amusons tout en contrant les idées de
+        <span class="redacted" tabindex="0" role="button" aria-label="Texte masqué, cliquer pour révéler">milliardaires d'extrême droite</span>
+        qui diabolisent nos intérêts pour y ajouter leur vision capitaliste et raciste.
+      </p>
+      <span class="redacted-hint">[ passez la souris ou appuyez sur les zones noircies pour révéler ]</span>
+    </div>
+  </section>
+
+  <!-- REVENDICATIONS -->
+  <section id="revendications">
+    <div class="sec-head">
+      <span class="tag">02</span>
+      <h2>Revendications</h2>
+    </div>
+
+    <ul class="demands">
+      <li><span class="no">01</span><span>Le hacking est un esprit de curiosité et de liberté, pas un métier normé pour cols blancs.</span></li>
+      <li><span class="no">02</span><span>Fuck la surveillance de masse et les outils qui traquent les gens plutôt que de les protéger.</span></li>
+      <li><span class="no">03</span><span>Personne ne se réduit à son identité, sa couleur de peau ou son compte en banque.</span></li>
+      <li><span class="no">04</span><span>On s'amuse et on apprend, sans se plier aux discours qui diabolisent nos intérêts.</span></li>
+      <li><span class="no">05</span><span>Pas de vision capitaliste ni raciste.</span></li>
+    </ul>
+  </section>
+
+  <!-- MEMBERS -->
+  <section id="membres">
+    <div class="sec-head">
+      <span class="tag">03</span>
+      <h2>Membres</h2>
+    </div>
+
+    <div class="roster">
+      <div class="card">
+        <div class="handle">maddie</div>
+        <div class="role">Pwn / Reverse</div>
+        <div class="clearance">FONDATRICE</div>
+      </div>
+      <div class="card">
+        <div class="handle">notguizy</div>
+        <div class="role">Web / API</div>
+        <div class="clearance">CO-FONDATEUR</div>
+      </div>
+  </section>
+
+  <footer>
+    <span>© 2026 PALANTKILLED — dossier public, sans autorisation requise.</span>
+    <span><a href="#manifeste">DÉCLARATION</a> · <a href="https://ctftime.org" target="_blank" rel="noopener">CTFTIME</a> · <a href="mailto:contact@palantkilled.org">CONTACT</a></span>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.redacted').forEach(function(el){
+    el.addEventListener('click', function(){
+      el.classList.toggle('revealed');
+    });
+    el.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        el.classList.toggle('revealed');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
